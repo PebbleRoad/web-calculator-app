@@ -54,7 +54,7 @@ $(element).smartform({
     },
     "events": {        
         "submit": {
-            "click": "calculate"
+            "click": "submitHandler"
         }
     },
     "calculations": {        
