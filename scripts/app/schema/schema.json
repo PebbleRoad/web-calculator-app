@@ -1,0 +1,36 @@
+{
+    "schema": {        
+        "dob": {
+            "type": "date",
+            "label": "What is your date of birth",
+            "startYear": 1950,
+            "endYear": 2014,
+            "rules": {
+                "required": true
+            },
+            "messages": {
+                "required": "Hmm. You need to enter your date of birth!"
+            }
+        },
+        "submit": {
+            "type": "submit",
+            "label": "What's my age?"
+        },
+        "result": {
+            "type": "result",
+            "template": "scripts/app/results/result.hbs"
+        }
+    },
+    "form": {
+        "action": "/url/submit",
+        "exitOn": "fnNotEligible"
+    },
+    "events": {        
+        "submit": {
+            "click": "submitHandler"
+        }
+    },
+    "calculations": {
+        "age": "fnAge"        
+    }
+}

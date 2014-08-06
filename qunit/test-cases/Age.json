@@ -1,0 +1,23 @@
+{
+    "name": "Age calculator",
+    "tests": [
+        {
+            "name": "Test 1",
+            "data": {
+                "dob": "01 January 2000"
+            },
+            "expected": {
+                "fnAge": "15 years ago"
+            }
+        },
+        {
+            "name": "Test 2",
+            "data": {
+                "dob": "22 August 1984"
+            },
+            "expected": {
+                "fnAge": "30 years ago"
+            }
+        }
+    ]
+}

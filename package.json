@@ -1,0 +1,10 @@
+{
+  "name": "smartforms",
+  "version": "0.0.1",
+  "description": "",  
+  "scripts": {
+    "test": "qunit/index.html"
+  },
+  "author": "Vinay M <vinay@pebbleroad.com> (http://pebbleroad.com/)",
+  "license": "ISC"
+}

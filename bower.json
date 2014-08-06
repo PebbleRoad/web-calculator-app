@@ -1,0 +1,28 @@
+{
+  "name": "smartforms",
+  "version": "0.0.1",
+  "authors": [
+    "Vinay <rmdort@gmail.com>"
+  ],
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "requirejs": "~2.1.14",
+    "jquery": "~2.1.1",
+    "handlebars": "~1.3.0",    
+    "underscore": "~1.6.0",
+    "momentjs": "~2.7.0",
+    "jquery-validation": "~1.13.0",
+    "mathjs": "~0.25.0",
+    "qunit-once": "~0.1.1"
+  }
+}
