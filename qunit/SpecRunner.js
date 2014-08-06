@@ -13,8 +13,7 @@ require.config({
         moment      : '../bower_components/momentjs/min/moment.min',
         mathjs      : '../bower_components/mathjs/dist/math.min',
         validate    : '../bower_components/jquery-validation/dist/jquery.validate',
-        qunit       : '../qunit/lib/qunit/qunit.min',
-        qunitonce   : '../bower_components/qunit-once/qunit-once',
+        qunit       : '../qunit/lib/qunit/qunit.min',        
         specbuilder : '../qunit/Specbuilder'
     },
     shim: {
@@ -28,16 +27,12 @@ require.config({
            exports: 'QUnit',
            init: function() {
                QUnit.config.autoload = false;
-               QUnit.config.autostart = false;
-               //QUnit.config.reorder = false;
+               QUnit.config.autostart = false;               
            },
            deps: ['jquery']
        },
        specbuilder: {
           deps: ['qunit']
-       },
-       qunitonce: {
-            deps: ['jquery', 'qunit']
        }
     },
 

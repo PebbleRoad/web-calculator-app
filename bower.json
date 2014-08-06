@@ -22,7 +22,6 @@
     "underscore": "~1.6.0",
     "momentjs": "~2.7.0",
     "jquery-validation": "~1.13.0",
-    "mathjs": "~0.25.0",
-    "qunit-once": "~0.1.1"
+    "mathjs": "~0.25.0"    
   }
 }

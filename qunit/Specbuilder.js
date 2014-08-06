@@ -1,7 +1,4 @@
-define([
-    'qunit',
-    'qunitonce',    
-    ], function(QUnit){
+define(function(){
 
     /**
      * For unit test logging

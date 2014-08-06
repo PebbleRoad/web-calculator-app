@@ -11,8 +11,7 @@ require.config({
         underscore: '../bower_components/underscore/underscore',
         moment: '../bower_components/momentjs/min/moment.min',
         mathjs: '../bower_components/mathjs/dist/math.min',
-        validate: '../bower_components/jquery-validation/dist/jquery.validate',
-        rivets: '../bower_components/rivets/dist/rivets.min.js'
+        validate: '../bower_components/jquery-validation/dist/jquery.validate'        
     },
     shim: {
         underscore: {
