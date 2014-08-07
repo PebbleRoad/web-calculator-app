@@ -10,17 +10,36 @@ require([
 
 function(app, moment, mathjs){
 
-    $('.calculator').smartform({
+    $('.calculator').smartform({        
         schema: 'scripts/app/schema/schema.json',
         methods: {
             submitHandler: function(){
+                
                 this.API().evaluate()
+
             },
-            fnAge: function(){
+            fnCalculate: function(){
 
-                var dob = this.API().get('dob')
+                var amount = this.API().get('amount'),
+                    year = this.API().get('term'),
+                    term = year * 12,
+                    rate = this.API().get('rate')/12/100
+                    
+                /* Calculate EMI */
 
-                return moment(dob, 'DD MMMM YYYY').fromNow()
+                var emi = amount * rate * mathjs.pow(1+rate, term)/(mathjs.pow(1+rate, term) -1)
+
+                
+
+                /* Return the values to the template */
+
+                return {
+                    emi            : mathjs.round(emi, 0),
+                    total_payment  : mathjs.round(emi * term, 0),
+                    total_interest : mathjs.round(emi * term, 0) - amount                    
+                }
+                
+                
             }
         }
     })

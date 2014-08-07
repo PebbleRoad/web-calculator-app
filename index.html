@@ -30,11 +30,13 @@
             }
 
             table{
-                text-align: left;
+                text-align: left;    
+                border-collapse: collapse            
             }
 
             td, th{
-                padding: 5px;
+                padding: 10px;
+                border: 1px #ccc solid;
             }
 
             /**
@@ -76,10 +78,19 @@
     </head>
     <body>
 
-
-        <div class="calculator">
-            <h2>Calculate your age</h2>
+        <!-- Guided calculator -->
+        <div class="calculator" data-guided="true">
+            <h2>EMI Calculator for home loan (Guided calculator)</h2>
         </div>
+        <!-- / Guided calculator -->
+
+        <br><br>
+
+        <!-- Flat calculator -->
+        <div class="calculator" data-guided="false">
+            <h2>EMI Calculator for home loan (Flat calculator)</h2>
+        </div>
+        <!-- / Flat calculator -->
 
         
 

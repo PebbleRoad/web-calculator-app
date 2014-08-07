@@ -1,20 +1,40 @@
 {
     "schema": {        
-        "dob": {
-            "type": "date",
-            "label": "What is your date of birth",
-            "startYear": 1950,
-            "endYear": 2014,
+        "amount": {
+            "type": "string",
+            "label": "What is your principal loan amount?",            
             "rules": {
                 "required": true
             },
             "messages": {
-                "required": "Hmm. You need to enter your date of birth!"
+                "required": "Loan amount is required."
+            }
+        },
+        "rate": {
+            "type": "string",
+            "label": "Interest rate (%)",
+            "rules": {
+                "required": true,
+                "number": true
+            },
+            "messages": {
+                "required": "Interest rate is required."
+            }
+        },
+        "term": {
+            "type": "string",
+            "label": "Loan term (years)",            
+            "rules": {
+                "required": true,
+                "number": true
+            },
+            "messages": {
+                "required": "Loan term is required."
             }
         },
         "submit": {
             "type": "submit",
-            "label": "What's my age?"
+            "label": "Calculate"
         },
         "result": {
             "type": "result",
@@ -22,8 +42,7 @@
         }
     },
     "form": {
-        "action": "/url/submit",
-        "exitOn": "fnNotEligible"
+        "action": "/url/submit"        
     },
     "events": {        
         "submit": {
@@ -31,6 +50,6 @@
         }
     },
     "calculations": {
-        "age": "fnAge"        
+        "output": "fnCalculate"        
     }
 }

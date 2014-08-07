@@ -3,20 +3,35 @@
 ## Initialize
 
 ```
-$(element).smartform({
-    schema: schema,
-    guided: true,
+$('.calculator').smartform({        
+    schema: 'scripts/app/schema/schema.json',
     methods: {
         submitHandler: function(){
-            
-            /* Evaluates the form */
             
             this.API().evaluate()
 
         },
-        calculation_1: function(){
+        fnCalculate: function(){
+
+            var amount = this.API().get('amount'),
+                year = this.API().get('term'),
+                term = year * 12,
+                rate = this.API().get('rate')/12/100
+                
+            /* Calculate EMI */
+
+            var emi = amount * rate * mathjs.pow(1+rate, term)/(mathjs.pow(1+rate, term) -1)
+
             
-            return this.API().get('question_1') > 10
+
+            /* Return the values to the template */
+
+            return {
+                emi            : mathjs.round(emi, 0),
+                total_payment  : mathjs.round(emi * term, 0),
+                total_interest : mathjs.round(emi * term, 0) - amount                    
+            }
+            
             
         }
     }
@@ -27,40 +42,59 @@ $(element).smartform({
 ## Form Schema
 
 ```
-"schema": {
-    "q1": {
-        "type": "date",
-        "label": "When does the your application expire?",
-        "default": "1 August 2014",
-        "rules": {
-            "required": true
+{
+    "schema": {        
+        "amount": {
+            "type": "string",
+            "label": "What is your principal loan amount?",            
+            "rules": {
+                "required": true
+            },
+            "messages": {
+                "required": "Loan amount is required."
+            }
         },
-        "messages": {
-            "required": "Please enter a valid date."
+        "rate": {
+            "type": "string",
+            "label": "Interest rate (%)",
+            "rules": {
+                "required": true,
+                "number": true
+            },
+            "messages": {
+                "required": "Interest rate is required."
+            }
+        },
+        "term": {
+            "type": "string",
+            "label": "Loan term (years)",            
+            "rules": {
+                "required": true,
+                "number": true
+            },
+            "messages": {
+                "required": "Loan term is required."
+            }
+        },
+        "submit": {
+            "type": "submit",
+            "label": "Calculate"
+        },
+        "result": {
+            "type": "result",
+            "template": "scripts/app/results/result.hbs"
         }
     },
-    "submit": {
-        "type": "submit",
-        "label": "Calculate"
-    },
-    "result": {
-        "type": "result",
-        "template": "app/results/result-ep"
-    }
-    },
     "form": {
-        "action": "/url/submit",
-        "exitOn": "fnNotEligible"
+        "action": "/url/submit"        
     },
     "events": {        
         "submit": {
             "click": "submitHandler"
         }
     },
-    "calculations": {        
-        "variable_1" : "calculation_1",
-        "variable_2" : "calculation_2",
-        "variable_3" : "calculation_3"
+    "calculations": {
+        "output": "fnCalculate"        
     }
 }
 ```

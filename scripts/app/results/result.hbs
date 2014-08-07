@@ -1,1 +1,18 @@
-<h3>Hey! You were born {{age}}.</h3>
+<ul>
+    <li>Loan amount: {{amount}}</li>
+    <li>Interest rate: {{rate}}%</li>
+    <li>Number of years: {{term}}</li>
+</ul>
+<table>
+    <tr>
+        <th>Monthly Payment (EMI)</th>
+        <th>Total Interest Payable</th>
+        <th>Total Payment (Principal + Interest)</th>
+    </tr>
+
+    <tr>
+        <td>{{output.emi}}</td>
+        <td>{{output.total_interest}}</td>
+        <td>{{output.total_payment}}</td>
+    </tr>
+</table>

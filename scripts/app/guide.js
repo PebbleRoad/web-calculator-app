@@ -178,7 +178,7 @@ define(function(require, exports, module){
             
             /* Check if should Exit the form */
 
-            if(self.form._form.hasOwnProperty('exitOn')){
+            if(self.form._form.hasOwnProperty('exitOn') && self.form.options.methods.hasOwnProperty(self.form._form.exitOn)){
 
                 var exitFn = self.form.options.methods[self.form._form.exitOn].call(self.form),
                     exitBoolean = (typeof exitFn ==  "object")? exitFn.notEligible : exitFn
