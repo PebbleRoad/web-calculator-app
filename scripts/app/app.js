@@ -291,48 +291,6 @@ function($, Handlebars, _, fieldtypes, Guide){
             
             var smartField = fieldtypes.transform(property, field, index, this.options, obj);
 
-            /* Assign watchers if any */
-
-            if(field.hasOwnProperty('watcher')){
-
-                var e = field['watcher'].events,
-                    handler = field['watcher'].handler
-
-                if(self.options.methods.hasOwnProperty(handler)){
-
-                    if(_.contains(e.split(/\s/), events.loaded)){
-
-                        self.$el.on(events.loaded, function(event){
-                            self.options.methods[handler].call(self, event)
-                        })
-                        
-                    }
-
-                    /* Check field type */
-
-                    switch(field.type){
-
-                        case "date":
-                            
-                            self.$el.on(e, '[name^="'+property+'-"]', function(event){
-                                                        
-                                self.options.methods[handler].call(self, event)
-
-                            })
-
-                            break;
-
-                        default:
-                                        
-                            self.$el.on(e, '[name="'+property+'"]', function(event){
-                                                        
-                                self.options.methods[handler].call(self, event)
-
-                            })
-                    }
-                    
-                }
-            }
 
             /* Append the form */
 

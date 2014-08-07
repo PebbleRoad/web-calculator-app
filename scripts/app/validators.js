@@ -1,5 +1,5 @@
 /**
- * Handlebars formulas
+ * jQuery Validators
  */
 
 define(
