@@ -1,0 +1,44 @@
+{
+    "name": "EMI calculator",
+    "tests": [
+        {
+            "name": "Test 1",
+            "data": {
+                "amount": 20000,
+                "rate": 7,
+                "term": 5
+            },
+            "expected": {
+                "output.emi": 396,
+                "output.total_interest": 3761,
+                "output.total_payment": 23761
+            }
+        },
+        {
+            "name": "Test 2",
+            "data": {
+                "amount": 25000,
+                "rate": 7,
+                "term": 5
+            },
+            "expected": {
+                "output.emi": 495,
+                "output.total_interest": 4702,
+                "output.total_payment": 29702
+            }
+        },
+        {
+            "name": "Test 3",
+            "data": {
+                "amount": 5000,
+                "rate": 1,
+                "term": 5
+            },
+            "expected": {
+                "output.emi": 85,
+                "output.total_interest": 128,
+                "output.total_payment": 5128
+            }
+        }
+    ]
+}

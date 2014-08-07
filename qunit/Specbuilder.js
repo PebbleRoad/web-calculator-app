@@ -129,15 +129,17 @@ define(function(){
 
                         var split_method = e.split('.');
 
-                        if(methods.hasOwnProperty(split_method[0])){
-                        
+                        if(self.calculator._calculations.hasOwnProperty(split_method[0])){
+                            
+                            var method_name = self.calculator._calculations[split_method[0]];
+                            
                             if(split_method.length > 1){
 
-                            	method = methods[split_method[0]].call(self.calculator)[split_method[1]]
+                            	method = methods[method_name].call(self.calculator)[split_method[1]]
 
                             }else{
 
-                            	method = methods[split_method[0]].call(self.calculator)
+                            	method = methods[method_name].call(self.calculator)
                             }
 
                         }                        

@@ -50,7 +50,7 @@ require.config({
 
 var specs = [
     '../qunit/spec/Calculator',    
-    '../qunit/spec/Age'
+    '../qunit/spec/Emi'
   ];
 
 require(['main', 'moment', 'specbuilder'], function(){

@@ -2,43 +2,49 @@ var
 f, 
 c,
 schema = {
-    "schema": {
-        "q1": {
-            "type": "date",
-            "label": "When does the EP expire?",
-            "default": "1 August 2014",
-            "rules": {
-                "required": true
+        "schema": {        
+            "amount": {
+                "type": "string",
+                "label": "What is your principal loan amount?",            
+                "rules": {
+                    "required": true
+                },
+                "messages": {
+                    "required": "Loan amount is required."
+                }
             },
-            "messages": {
-                "required": "Please enter a valid date."
+            "rate": {
+                "type": "string",
+                "label": "Interest rate (%)",
+                "rules": {
+                    "required": true,
+                    "number": true
+                },
+                "messages": {
+                    "required": "Interest rate is required."
+                }
+            },
+            "submit": {
+                "type": "submit",
+                "label": "Calculate"
+            },
+            "result": {
+                "type": "result",
+                "template": "scripts/app/results/result.hbs"
             }
         },
-        "submit": {
-            "type": "submit",
-            "label": "Calculate"
-        },
-        "result": {
-            "type": "result",
-            "template": "app/results/result-ep"
-        }
-        },
         "form": {
-            "action": "/url/submit"
+            "action": "/url/submit"        
         },
         "events": {        
             "submit": {
-                "click": "calculate"
+                "click": "submitHandler"
             }
         },
-        "calculations": {        
-            "renewToday": "fnRenewToday",
-            "epExpired": "fnExpired",
-            "epExpiringToday": "fnExpiringToday",
-            "success": "fnSuccess",
-            "renewSuccessDate": "fnRenewSuccessDate"
+        "calculations": {
+            "output": "fnCalculate"        
         }
-    },
+    },    
     methods= {
 
     };
@@ -73,10 +79,11 @@ QUnit.test('Initialization', function(){
 })
 
 
-QUnit.test('Calculations', function(){
+QUnit.test('API', function(){
 
-    console.log(c.API())
+    ok(c.API(), 'API is defined')
 
-    equal(1,1, 'a')
+    ok(c.API().set('amount', 20000), 'API Method set')
 
+    equal(c.API().get('amount'), 20000, 'API Method get')
 })
