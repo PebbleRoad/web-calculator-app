@@ -116,8 +116,17 @@ function($, Handlebars, _, fieldtypes, Guide){
             /* Guided or Flat */
                     
             self.$el.on(events.loaded, function(){
+                /**
+                 * If there is no form tag present
+                 * Add one
+                 */
 
-                if(!self.$el.find('form').length) self.$el.wrapInner('<form />');
+                if(
+                    !self.$el.find('form').length && 
+                    self.$el.prop("tagName") != "FORM"){
+
+                    self.$el.wrapInner('<form />');
+                }
 
                 /* Find all questions */
 
@@ -220,10 +229,7 @@ function($, Handlebars, _, fieldtypes, Guide){
                             
                         }
                         else{
-                            //console.log(objcount)
-                            //if(objcount == 0) self.$el.append('<p>object wrap</p>');
-                            //objcount++
-
+                            
                             /* Build the form */
 
                             self.buildFields(property, o[property], ++count, obj)                            
@@ -320,7 +326,9 @@ function($, Handlebars, _, fieldtypes, Guide){
 
                     element = (e == '*')? ':input': (field_type == 'date')? '[name^="'+e+'-"]' : '[name="'+e+'"]';
 
-
+                    /**
+                     * For events.loaded
+                     */
                     if(_.contains(event_name.split(/\s/), events.loaded)){
 
                         this.$el.on(events.loaded, {name: e}, function(event){
@@ -328,6 +336,9 @@ function($, Handlebars, _, fieldtypes, Guide){
                         })
                     }
 
+                    /**
+                     * For all other events
+                     */
 
                     this.$el.on(event_name, element, function(event){
 
@@ -371,6 +382,13 @@ function($, Handlebars, _, fieldtypes, Guide){
                         
                         if(this.options.methods.hasOwnProperty(this._events[element][e])){
                             return this.options.methods[this._events[element][e]].call(this, event)
+                        }else{
+
+                            /**
+                             * Throw an error                             
+                             */
+                            throw new Error('Methods doesnt have the handler: '+ this._events[element][e])
+
                         }
                     }
                 }
@@ -409,42 +427,7 @@ function($, Handlebars, _, fieldtypes, Guide){
 
         },
 
-        serializeForm: function(){
-
-            var formObject = [];
-            var elements = this.$el.find(':input').get();
-
-            $.each(elements, function(index, el) {
-                if (this.name && !this.disabled && (this.checked || /select|textarea/i.test(this.nodeName) || /text|hidden|password/i.test(this.type))) {
-                    
-                    var val = $(el).val(),
-                        input = {};
-
-                    input[encodeURIComponent(this.name)] = encodeURIComponent(val);
-
-                    formObject.push(input);
-
-                }
-            });
-
-            return formObject;
-
-        },
-
-        /**
-         * registerRule
-         * Registers a new rule
-         * @param  {[type]} rule [description]
-         * @return {[type]}      [description]
-         */
-        registerRule: function(rule){
-
-            Handlebars.registerHelper('rule', function(context, options){
-
-                //var fn = options.fn
-
-            })
-        },
+        
 
         API: function(){
 
@@ -572,8 +555,6 @@ function($, Handlebars, _, fieldtypes, Guide){
                 },
 
                 initValidation: function(){
-
-                    if(!self.$el.find('form').length) self.$el.wrapInner('<form />');
 
                     /* Validation Object from Schema */
 
