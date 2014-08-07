@@ -1,875 +1,868 @@
 define([
-    'jquery',    
-    'hbs',    
-    'underscore',    
-    'app/fieldtypes',        
-    'app/guide',
-    'app/validators'
+	'jquery',    
+	'hbs',    
+	'underscore',    
+	'app/fieldtypes',        
+	'app/guide',
+	'app/validators'
 ], 
 
 function($, Handlebars, _, fieldtypes, Guide){
-    
-    /**
-     * Default options
-     */
-    
-    var defaults = {
-        resultClass: 'smartform-result',
-        questionClass   : 'smartform-question',
-        guidedClass: {            
-            activeClass      : 'smartform-question-active',
-            continueBtnClass : 'smartform-guided-btn',
-            submitClass      : 'smartform-submit'
-        }
-    }
+	
+	/**
+	 * Default options
+	 */
+	
+	var defaults = {
+		resultClass: 'smartform-result',
+		questionClass   : 'smartform-question',
+		guidedClass: {            
+			activeClass      : 'smartform-question-active',
+			continueBtnClass : 'smartform-guided-btn',
+			submitClass      : 'smartform-submit'
+		}
+	}
 
-    /**
-     * Events
-     */
-    
-    var events = {
-        loaded: 'smartform.loaded'
-    }
+	/**
+	 * Events
+	 */
+	
+	var events = {
+		loaded: 'smartform.loaded'
+	}
 
-    /**
-     * SmartForm constructor
-     * 
-     */
+	/**
+	 * SmartForm constructor
+	 * 
+	 */
 
-    function SmartForm(element, options){
-        /* Reverse lookup */
+	function SmartForm(element, options){
+		/* Reverse lookup */
 
-        var self = this
+		var self = this
 
-        /* Version */
+		/* Version */
 
-        this.__version__ = '0.0.1'
+		this.__version__ = '0.0.1'
 
-        /* Element */
+		/* Element */
 
-        this.$el = $(element)
+		this.$el = $(element)
 
-        /* Options */
+		/* Options */
 
-        this.options = $.extend({}, this.$el.data(), defaults, options)        
-        
-        /* Get Schema */
+		this.options = $.extend({}, this.$el.data(), defaults, options)        
+		
+		/* Get Schema */
 
-        this.initialize()
+		this.initialize()
 
-        return this
-        
-    }
+		return this
+		
+	}
 
    
 
-    /**
-     * Prototype methods
-     */
+	/**
+	 * Prototype methods
+	 */
 
-    SmartForm.prototype = {
-        
-        /**
-         * Initialize
-         */
-        
-        initialize: function(){
+	SmartForm.prototype = {
+		
+		/**
+		 * Initialize
+		 */
+		
+		initialize: function(){
 
-            var self = this
-            
-            /**
-             * If schema is an object
-             * @type {[object]}
-             */
-            if(typeof this.options.schema == 'object'){
+			var self = this
+			
+			/**
+			 * If schema is an object
+			 * @type {[object]}
+			 */
+			if(typeof this.options.schema == 'object'){
 
-                afterLoaded(this.options.schema)
+				afterLoaded(this.options.schema)
 
-                return ;
-            }
+				return ;
+			}
 
-            /**
-             * If schema is a JSON file
-             * @type {[object]}
-             */
+			/**
+			 * If schema is a JSON file
+			 * @type {[object]}
+			 */
 
-            $.ajax({
-                
-                dataType: 'json',
-                
-                mimeType: "application/json",
+			$.ajax({
+				
+				dataType: 'json',
+				
+				mimeType: "application/json",
 
-                url: this.options.schema,
+				url: this.options.schema,
 
-                success: function(data){
-                                
-                    afterLoaded(data);
-                    
-                },
-                error: function(jqXHR, textStatus, errorThrown){
-                    throw new Error('JSON Parse error: '+ errorThrown)
-                }
+				success: function(data){
+								
+					afterLoaded(data);
+					
+				},
+				error: function(jqXHR, textStatus, errorThrown){
+					throw new Error('JSON Parse error: '+ errorThrown)
+				}
 
-            });
+			});
 
 
-            /* Guided or Flat */
-                    
-            self.$el.on(events.loaded, function(){
-                /**
-                 * If there is no form tag present
-                 * Add one
-                 */
+			/* Guided or Flat */
+					
+			self.$el.on(events.loaded, function(){
+				/**
+				 * If there is no form tag present
+				 * Add one
+				 */
 
-                if(
-                    !self.$el.find('form').length && 
-                    self.$el.prop("tagName") != "FORM"){
+				if(
+					!self.$el.find('form').length && 
+					self.$el.prop("tagName") != "FORM"){
 
-                    self.$el.wrapInner('<form />');
-                }
+					self.$el.wrapInner('<form />');
+				}
 
-                /* Find all questions */
+				/* Find all questions */
 
-                self.$questions = self.$allquestions = self.$el.find('.'+self.options.questionClass)
+				self.$questions = self.$allquestions = self.$el.find('.'+self.options.questionClass)
 
-                    
-                /* If guided */
+					
+				/* If guided */
 
-                if(self.options.guided){
+				if(self.options.guided){
 
-                    var guide = new Guide(self).init()                    
+					var guide = new Guide(self).init()                    
 
-                }
-                
+				}
+				
 
-            })
+			})
 
-            /**
-             * After Schema is loaded
-             */
-            
-            function afterLoaded(data){
+			/**
+			 * After Schema is loaded
+			 */
+			
+			function afterLoaded(data){
 
-                /* Schema to a function variable */
+				/* Schema to a function variable */
 
-                self._schema = data.schema                
+				self._schema = data.schema                
 
-                /* Events to a function variable */
+				/* Events to a function variable */
 
-                self._events = data.events
+				self._events = data.events
 
-                /* Form */
+				/* Form */
 
-                self._form = data.form
+				self._form = data.form
 
-                /* Calculations */
+				/* Calculations */
 
-                self._calculations = data.calculations
+				self._calculations = data.calculations
 
-                /* Build keys */
+				/* Build keys */
 
-                self.buildKeys();
+				self.buildKeys();
 
-                /* Attach events */
+				/* Attach events */
 
-                self.attachEvents();
+				self.attachEvents();
 
-                /* Build a form */
+				/* Build a form */
 
-                self.parseSchema();                
-                
-            }
+				self.parseSchema();                
+				
+			}
 
-        },
+		},
 
-        buildKeys: function(){
+		buildKeys: function(){
 
-            this._flatSchema = this.flatten(this._schema)
+			this._flatSchema = this.flatten(this._schema)
 
 
-            /* Keys */
-            this._keys = []
+			/* Keys */
+			this._keys = []
 
-            /* Question types */
+			/* Question types */
 
-            this._types = []
+			this._types = []
 
-            /* Push */
+			/* Push */
 
-            for(var key in this._flatSchema) {
-                
-                this._keys.push(key)
+			for(var key in this._flatSchema) {
+				
+				this._keys.push(key)
 
-                this._types.push(this._flatSchema[key].fieldtype || this._flatSchema[key].type)
-            }            
+				this._types.push(this._flatSchema[key].fieldtype || this._flatSchema[key].type)
+			}            
 
-        },
+		},
 
-        /**
-         * Parses a JSON object schma
-         */
-        
-        parseSchema: function(){
+		/**
+		 * Parses a JSON object schma
+		 */
+		
+		parseSchema: function(){
 
-            var self = this,
-                count = 0
+			var self = this,
+				count = 0
 
-            function traverse(o, obj){
-                for(var property in o){
+			function traverse(o, obj){
+				for(var property in o){
 
-                    if(o.hasOwnProperty(property)){                        
+					if(o.hasOwnProperty(property)){                        
 
-                        if(
-                            o[property]!== null && 
-                            o[property].type === 'object'){
-                            
-                            traverse(o[property].properties, o[property])
+						if(
+							o[property]!== null && 
+							o[property].type === 'object'){
+							
+							traverse(o[property].properties, o[property])
 
-                            var objcount = 0;
-                            
-                        }
-                        else{
-                            
-                            /* Build the form */
+							var objcount = 0;
+							
+						}
+						else{
+							
+							/* Build the form */
 
-                            self.buildFields(property, o[property], ++count, obj)                            
-                            
-                        }
+							self.buildFields(property, o[property], ++count, obj)
+							
+						}
 
-                        /* Save the results */
+						/* Save the results */
 
-                        if(o[property].type === 'result') self._results = o[property]
+						if(o[property].type === 'result') self._results = o[property]
 
-                    }
-                }
-            }
+					}
+				}
+			}
 
-            /* Traverse the schema */
+			/* Traverse the schema */
 
-            traverse(this._schema)
+			traverse(this._schema)
 
 
-            /* Trigger form completed */
+			/* Trigger form completed */
 
-            self.$el.trigger(events.loaded, self);
+			self.$el.trigger(events.loaded, self);
 
-        },
+		},
 
-        flatten: function(s){
+		flatten: function(s){
 
-            var _r = {};
+			var _r = {};
 
-            function recurse(s){
+			function recurse(s){
 
-                for(var p in s){
+				for(var p in s){
 
-                    if(s[p].type == "object"){
+					if(s[p].type == "object"){
 
-                        recurse(s[p].properties)
+						recurse(s[p].properties)
 
-                    }else{
+					}else{
 
-                        //(s[p].type != "submit") && (s[p].type != "result") && 
-                        _r[p] = s[p];
-                    }
-                }
-            }
+						//(s[p].type != "submit") && (s[p].type != "result") && 
+						_r[p] = s[p];
+					}
+				}
+			}
 
-            recurse(s)
+			recurse(s)
 
-            return _r;
-            
-        },
+			return _r;
+			
+		},
 
-        
-        /**
-         * Builds form objects
-         */
-        
-        buildFields: function(property, field, index, obj){
+		
+		/**
+		 * Builds form objects
+		 */
+		
+		buildFields: function(property, field, index, obj){
 
-            var self = this
-                        
-            
-            /**
-             * Promise based             
-             */
-            
-            var smartField = fieldtypes.transform(property, field, index, this.options, obj);
+			
+			var smartField = fieldtypes.transform(property, field, index, this.options, obj);
 
 
-            /* Append the form */
+			/* Append the form */
 
-            self.$el.append(smartField)
+			this.$el.append(smartField)
 
+		},
 
-        },
 
+		/**
+		 * Attach events
+		 */
+		
+		attachEvents: function(){
 
-        /**
-         * Attach events
-         */
-        
-        attachEvents: function(){
+			var self = this,
+				element,
+				field_type,
+				field_index;
+			
+			for(var e in this._events){
 
-            var self = this,
-                element,
-                field_type,
-                field_index;
-            
-            for(var e in this._events){
+				field_index = self._keys.indexOf(e)
+				field_type = self._types[field_index]                
 
-                field_index = self._keys.indexOf(e)
-                field_type = self._types[field_index]                
+				for(var event_name in this._events[e]){                    
 
-                for(var event_name in this._events[e]){                    
+					element = (e == '*')? ':input': (field_type == 'date')? '[name^="'+e+'-"]' : '[name="'+e+'"]';
 
-                    element = (e == '*')? ':input': (field_type == 'date')? '[name^="'+e+'-"]' : '[name="'+e+'"]';
+					/**
+					 * For events.loaded
+					 */
+					if(_.contains(event_name.split(/\s/), events.loaded)){
 
-                    /**
-                     * For events.loaded
-                     */
-                    if(_.contains(event_name.split(/\s/), events.loaded)){
+						this.$el.on(events.loaded, {name: e}, function(event){
+							self.fireEvent(event)
+						})
+					}
 
-                        this.$el.on(events.loaded, {name: e}, function(event){
-                            self.fireEvent(event)
-                        })
-                    }
+					/**
+					 * For all other events
+					 */
 
-                    /**
-                     * For all other events
-                     */
+					this.$el.on(event_name, element, function(event){
 
-                    this.$el.on(event_name, element, function(event){
+						/* Call events from external Events API */
+						
+						self.fireEvent(event, this.name)
 
-                        /* Call events from external Events API */
-                        
-                        self.fireEvent(event, this.name)
+						
+					})                    
 
-                        
-                    })                    
+				}
 
-                }
+			}
 
-            }
+		},
 
-        },
+		fireEvent: function(event, element){    
+			
+			
+			var full_event = event.type + (event.namespace? '.' + event.namespace: ''),
+				element = (event.data && event.data.name)? event.data.name : element;
 
-        fireEvent: function(event, element){    
-            
-            
-            var full_event = event.type + (event.namespace? '.' + event.namespace: ''),
-                element = (event.data && event.data.name)? event.data.name : element;
+			/**
+			 * Strip day/month/year from element name
+			 */
+			
+			var re = new RegExp(/(-day)|(-month)|(-year)$/ig);
+			
+			element = element.replace(re, '');
+			
+			/**
+			 * Fire events
+			 */
+						
 
-            /**
-             * Strip day/month/year from element name
-             */
-            
-            var re = new RegExp(/(-day)|(-month)|(-year)$/ig);
-            
-            element = element.replace(re, '');
-            
-            /**
-             * Fire events
-             */
-                        
+			if(this._events.hasOwnProperty(element)){
 
-            if(this._events.hasOwnProperty(element)){
+				for(var e  in this._events[element]){
 
-                for(var e  in this._events[element]){
+					if(_.contains(e.split(/\s/), full_event)){
+						
+						if(this.options.methods.hasOwnProperty(this._events[element][e])){
+							return this.options.methods[this._events[element][e]].call(this, event)
+						}else{
 
-                    if(_.contains(e.split(/\s/), full_event)){
-                        
-                        if(this.options.methods.hasOwnProperty(this._events[element][e])){
-                            return this.options.methods[this._events[element][e]].call(this, event)
-                        }else{
+							/**
+							 * Throw an error                             
+							 */
+							throw new Error('Methods doesnt have the handler: '+ this._events[element][e])
 
-                            /**
-                             * Throw an error                             
-                             */
-                            throw new Error('Methods doesnt have the handler: '+ this._events[element][e])
+						}
+					}
+				}
 
-                        }
-                    }
-                }
+			}
 
-            }
+			/* Prevent form submission */
+						
+			if(event.currentTarget.type && event.currentTarget.type === "submit") event.preventDefault();
 
-            /* Prevent form submission */
-                        
-            if(event.currentTarget.type && event.currentTarget.type === "submit") event.preventDefault();
 
+		},
 
-        },
+		detachEvents: function(){
 
-        detachEvents: function(){
+			var self = this,
+				element;
+			
+			for(var e in this._events){
 
-            var self = this,
-                element;
-            
-            for(var e in this._events){
+				for(var event_name in this._events[e]){
 
-                for(var event_name in this._events[e]){
+					element = (e == '*')? ':input': '[name="'+e+'"]';
+					
+					this.$el.off(event_name, '[name="'+e+'"]', function(event){
 
-                    element = (e == '*')? ':input': '[name="'+e+'"]';
-                    
-                    this.$el.off(event_name, '[name="'+e+'"]', function(event){
+						/* Call events from external Events API */
+						
+						self.options.methods[self._events[e][event_name]].call(self, event)
+						
+					})
 
-                        /* Call events from external Events API */
-                        
-                        self.options.methods[self._events[e][event_name]].call(self, event)
-                        
-                    })
+				}
 
-                }
+			}
 
-            }
+		},
 
-        },
+		
 
-        
+		API: function(){
 
-        API: function(){
+			var self = this;
 
-            var self = this;
 
+			/**
+			 * Private
+			 */
+			
+			this.getByName = function(name){
 
-            /**
-             * Private
-             */
-            
-            this.getByName = function(name){
+				return this.$el.find('[name="'+ name + '"]')
+			}
 
-                return this.$el.find('[name="'+ name + '"]')
-            }
+			return {
 
-            return {
+				get: function(name, showText){
+					
 
-                get: function(name, showText){
-                    
+					var index = self._keys.indexOf(name),
+						type = self._types[index],
+						field = self._flatSchema[name]
+					
+					switch(field.type){
 
-                    var index = self._keys.indexOf(name),
-                        type = self._types[index],
-                        field = self._flatSchema[name]
-                    
-                    switch(field.type){
+						case "string":
+							
+							/* Select field */
 
-                        case "string":
-                            
-                            /* Select field */
+							if(field.fieldtype == "select"){
+								
+								var q = self.getByName(name)
 
-                            if(field.fieldtype == "select"){
-                                
-                                var q = self.getByName(name)
+								return showText? q.find('option:selected').text() : q.val()
+							}
 
-                                return showText? q.find('option:selected').text() : q.val()
-                            }
+							/* Input fields */
+							if(!field.enum){
 
-                            /* Input fields */
-                            if(!field.enum){
+								return self.getByName(name).val()
+							}
 
-                                return self.getByName(name).val()
-                            }
+							/* Radio and checkboxes */
 
-                            /* Radio and checkboxes */
+							
+							if(field.fieldtype == "radio") {
 
-                            
-                            if(field.fieldtype == "radio") {
+								return showText? self.getByName(name).filter(':checked').data('text') : self.getByName(name).filter(':checked').val()
+							}
+							
+							return $.map(self.getByName(name).filter(':checked'), function(e, i){
+								
+								return showText? $(e).data('text'): e.value
 
-                                return showText? self.getByName(name).filter(':checked').data('text') : self.getByName(name).filter(':checked').val()
-                            }
-                            
-                            return $.map(self.getByName(name).filter(':checked'), function(e, i){
-                                
-                                return showText? $(e).data('text'): e.value
+							}).join(', ')                        
 
-                            }).join(', ')                        
+							//}
+							break;
 
-                            //}
-                            break;
 
+						case "date":                                        
+							var date = self.getByName(name+'-day').val() + ' ' + self.getByName(name+'-month').val() + ' ' + self.getByName(name+'-year').val(),
+								cleanDate = $.trim(date)
 
-                        case "date":                                        
-                            var date = self.getByName(name+'-day').val() + ' ' + self.getByName(name+'-month').val() + ' ' + self.getByName(name+'-year').val(),
-                                cleanDate = $.trim(date)
+							return showText? (cleanDate || 'Not selected') : moment(date, 'DD MMMM YYYY');
+							break;
 
-                            return showText? (cleanDate || 'Not selected') : moment(date, 'DD MMMM YYYY');
-                            break;
+						default:                    
+							return self.getByName(name).val()
+							break;
+					}
 
-                        default:                    
-                            return self.getByName(name).val()
-                            break;
-                    }
+				},
 
-                },
+				set: function(name, value){
 
-                set: function(name, value){
+					var index = self._keys.indexOf(name),
+						type = self._types[index],
+						field = self._flatSchema[name]
+					
+					switch(type){
 
-                    var index = self._keys.indexOf(name),
-                        type = self._types[index],
-                        field = self._flatSchema[name]
-                    
-                    switch(type){
+						case "date":
 
-                        case "date":
+							if(self.getByName(name).length){
 
-                            if(self.getByName(name).length){
+								return self.getByName(name).val(value)
 
-                                return self.getByName(name).val(value)
+							}else{
 
-                            }else{
+								var splitdate = value.toString().split(/\s/);
+							
+								self.getByName(name+'-day').val(Number(splitdate[0]))
+								self.getByName(name+'-month').val(splitdate[1])
+								self.getByName(name+'-year').val(Number(splitdate[2]))
+							
+							}
 
-                                var splitdate = value.toString().split(/\s/);
-                            
-                                self.getByName(name+'-day').val(Number(splitdate[0]))
-                                self.getByName(name+'-month').val(splitdate[1])
-                                self.getByName(name+'-year').val(Number(splitdate[2]))
-                            
-                            }
+							if(!value){
+								self.getByName(name+'-day').val('')
+								self.getByName(name+'-month').val('')
+								self.getByName(name+'-year').val('') 
+							}
+							
+							break;
 
-                            if(!value){
-                                self.getByName(name+'-day').val('')
-                                self.getByName(name+'-month').val('')
-                                self.getByName(name+'-year').val('') 
-                            }
-                            
-                            break;
+						case "radio":
+							
+							self.$el.find('[name="'+ name+ '"]')
+								.filter(function(){
+									return this.value == value
+								})
+								.prop("checked", true)
 
-                        case "radio":
-                            
-                            self.$el.find('[name="'+ name+ '"]')
-                                .filter(function(){
-                                    return this.value == value
-                                })
-                                .prop("checked", true)
+							return self.$el.find('[name="'+ name+ '"]').val(value)
+							break
 
-                            return self.$el.find('[name="'+ name+ '"]').val(value)
-                            break
+						default:
+							return self.$el.find('[name="'+ name+ '"]').val(value)
+							break;
+					}
+					
 
-                        default:
-                            return self.$el.find('[name="'+ name+ '"]').val(value)
-                            break;
-                    }
-                    
+				},
 
-                },
+				initValidation: function(){
 
-                initValidation: function(){
+					/* Validation Object from Schema */
 
-                    /* Validation Object from Schema */
+					var validationObject = {
+						rules: {},
+						messages: {},
+						groups: {},
+						submitHandler: function(form){
+							return false;
+						}
+					};
+					
+					for(prop in self._flatSchema){
 
-                    var validationObject = {
-                        rules: {},
-                        messages: {},
-                        groups: {},
-                        submitHandler: function(form){
-                            return false;
-                        }
-                    };
-                    
-                    for(prop in self._flatSchema){
+						var hasRules = self._flatSchema[prop].hasOwnProperty('rules'),
+							hasMessages = self._flatSchema[prop].hasOwnProperty('messages')
 
-                        var hasRules = self._flatSchema[prop].hasOwnProperty('rules'),
-                            hasMessages = self._flatSchema[prop].hasOwnProperty('messages')
+						/**
+						 * Validation messages
+						 */
+						
+						if(hasMessages){
 
-                        /**
-                         * Validation messages
-                         */
-                        
-                        if(hasMessages){
+							validationObject.messages[prop] = self._flatSchema[prop]['messages']
+							
+						}
 
-                            validationObject.messages[prop] = self._flatSchema[prop]['messages']
-                            
-                        }
+						/**
+						 * Validation rules
+						 */
 
-                        /**
-                         * Validation rules
-                         */
+						if(hasRules){
 
-                        if(hasRules){
+							/* Check if its a date validation */
 
-                            /* Check if its a date validation */
+							switch(self._flatSchema[prop].type.toLowerCase()){
 
-                            switch(self._flatSchema[prop].type.toLowerCase()){
+								case "date":
+																
+									/**
+									 * 1. Add a group
+									 * 2. Add validation rule for each field
+									 * 3. Add validation message
+									 */
+									
 
-                                case "date":
-                                                                
-                                    /**
-                                     * 1. Add a group
-                                     * 2. Add validation rule for each field
-                                     * 3. Add validation message
-                                     */
-                                    
+									 if(self._flatSchema[prop].rules){
+									
+										/* 1 */
+										validationObject.groups[prop+'-date'] = prop+"-day " + prop+"-month " + prop+"-year";
+										
+										/* 2 */
 
-                                     if(self._flatSchema[prop].rules){
-                                    
-                                        /* 1 */
-                                        validationObject.groups[prop+'-date'] = prop+"-day " + prop+"-month " + prop+"-year";
-                                        
-                                        /* 2 */
+										validationObject.rules[prop+'-day'] = self._flatSchema[prop].rules
+										validationObject.rules[prop+'-month'] = self._flatSchema[prop].rules
+										validationObject.rules[prop+'-year'] = self._flatSchema[prop].rules
 
-                                        validationObject.rules[prop+'-day'] = self._flatSchema[prop].rules
-                                        validationObject.rules[prop+'-month'] = self._flatSchema[prop].rules
-                                        validationObject.rules[prop+'-year'] = self._flatSchema[prop].rules
+									}
+									
 
-                                    }
-                                    
+									if(hasMessages && self._flatSchema[prop].messages.required){
 
-                                    if(hasMessages && self._flatSchema[prop].messages.required){
+										var msg = self._flatSchema[prop].messages
+										
+										/* 3 */
 
-                                        var msg = self._flatSchema[prop].messages
-                                        
-                                        /* 3 */
+										validationObject.messages[prop+'-day'] = msg
+										validationObject.messages[prop+'-month'] = msg
+										validationObject.messages[prop+'-year'] = msg
 
-                                        validationObject.messages[prop+'-day'] = msg
-                                        validationObject.messages[prop+'-month'] = msg
-                                        validationObject.messages[prop+'-year'] = msg
+									}
 
-                                    }
+									/* Delete parent message */
 
-                                    /* Delete parent message */
+									delete validationObject.messages[prop]
 
-                                    delete validationObject.messages[prop]
+									break;
 
-                                    break;
+								default: 
+									validationObject.rules[prop] = self._flatSchema[prop]['rules']
+									break;
+							}
 
-                                default: 
-                                    validationObject.rules[prop] = self._flatSchema[prop]['rules']
-                                    break;
-                            }
+							
 
-                            
 
+						}
 
-                        }
+						
+					}
+					
+					//console.log(validationObject)
+								
+					/* Validate the form */
 
-                        
-                    }
-                    
-                    //console.log(validationObject)
-                                
-                    /* Validate the form */
+					self.$el.find('form').validate(validationObject)
 
-                    self.$el.find('form').validate(validationObject)
+				},
 
-                },
+				validate: function(){
 
-                validate: function(){
+					/* Add validation objects */
 
-                    /* Add validation objects */
+					this.initValidation();
 
-                    this.initValidation();
+					/* Return false: true */
 
-                    /* Return false: true */
+					return self.$el.find('form').valid()
+					
+				},
 
-                    return self.$el.find('form').valid()
-                    
-                },
+				evaluate: function(){
 
-                evaluate: function(){
+			
+					var calculations = {}
 
-            
-                    var calculations = {}
 
+					/* Call init */
 
-                    /* Call init */
+					self.options.methods.hasOwnProperty('init') && self.options.methods['init'].call(self, self)
 
-                    self.options.methods.hasOwnProperty('init') && self.options.methods['init'].call(self, self)
 
+					/**
+					 * Validate the form
+					 */
+					
+					if(!this.validate()) return ;
 
-                    /**
-                     * Validate the form
-                     */
-                    
-                    if(!this.validate()) return ;
+					
+					/* Calculate result variables */
+					
+					_.each(self._calculations, function(value, key){
+						
+						if(self.options.methods.hasOwnProperty(value)){
+							calculations[key] = self.options.methods[value].call(self, self)
+						}
+						
+					})
 
-                    
-                    /* Calculate result variables */
-                    
-                    _.each(self._calculations, function(value, key){
-                        
-                        if(self.options.methods.hasOwnProperty(value)){
-                            calculations[key] = self.options.methods[value].call(self, self)
-                        }
-                        
-                    })
+					/* Add question variables */
 
-                    /* Add question variables */
+					for(k in self._keys){
+						
+						calculations[self._keys[k]] = this.get(self._keys[k], true)
+					}            
 
-                    for(k in self._keys){
-                        
-                        calculations[self._keys[k]] = this.get(self._keys[k], true)
-                    }            
+					
+					
+					/* Output the results */
 
-                    
-                    
-                    /* Output the results */
+					$.ajax({
+						url: self._results.template,
+						dataType: 'html',
+						success: function(template){
+													
+							/* Add results */
+							
+							self.$el
+								.find('.'+self.options.resultClass)
+								.html(Handlebars.compile(template)(calculations))
+								.show()
 
-                    $.ajax({
-                        url: self._results.template,
-                        dataType: 'html',
-                        success: function(template){
-                                                    
-                            /* Add results */
-                            
-                            self.$el
-                                .find('.'+self.options.resultClass)
-                                .html(Handlebars.compile(template)(calculations))
-                                .show()
 
+							/* Hide continue button */                
 
-                            /* Hide continue button */                
+							self.options.guided && self.$el.trigger('smartform.guidedEnd')
 
-                            self.options.guided && self.$el.trigger('smartform.guidedEnd')
+						}
+						
 
-                        }
-                        
+					});
 
-                    });
+				},
 
-                },
+				getQuestion: function(name){
 
-                getQuestion: function(name){
+					return self.$el
+						.find('[data-question="'+name+'"]')                
 
-                    return self.$el
-                        .find('[data-question="'+name+'"]')                
+				},
 
-                },
+				hideQuestion: function(name){
 
-                hideQuestion: function(name){
+					var $q = self.$el
+						.find('[data-question="'+name+'"]')
+						.addClass('smartform-inactive')
 
-                    var $q = self.$el
-                        .find('[data-question="'+name+'"]')
-                        .addClass('smartform-inactive')
+					if(!self.options.guided) $q.hide();
 
-                    if(!self.options.guided) $q.hide();
+					this.refreshQuestions();
 
-                    this.refreshQuestions();
+				},
+				showQuestion: function(name){
 
-                },
-                showQuestion: function(name){
+					var $q = self.$el
+						.find('[data-question="'+name+'"]')
+						.removeClass('smartform-inactive')                
 
-                    var $q = self.$el
-                        .find('[data-question="'+name+'"]')
-                        .removeClass('smartform-inactive')                
+					if(!self.options.guided) $q.show();
 
-                    if(!self.options.guided) $q.show();
+					this.refreshQuestions();
 
-                    this.refreshQuestions();
+				},
 
-                },
+				hideObject: function(obj){
 
-                hideObject: function(obj){
+					var $q = self.$el
+						.find('[data-object="'+obj+'"]')
+						.addClass('smartform-inactive')
+					
+					if(!self.options.guided) $q.hide();
 
-                    var $q = self.$el
-                        .find('[data-object="'+obj+'"]')
-                        .addClass('smartform-inactive')
-                    
-                    if(!self.options.guided) $q.hide();
+					this.refreshQuestions();
 
-                    this.refreshQuestions();
+				},
 
-                },
 
+				showObject: function(obj){
 
-                showObject: function(obj){
 
+					var $q = self.$el
+						.find('[data-object="'+obj+'"]')
+						.removeClass('smartform-inactive')
 
-                    var $q = self.$el
-                        .find('[data-object="'+obj+'"]')
-                        .removeClass('smartform-inactive')
+					if(!self.options.guided) $q.show();
 
-                    if(!self.options.guided) $q.show();
+					this.refreshQuestions();
 
-                    this.refreshQuestions();
+				},
 
-                },
 
+				hideResult: function(){
 
-                hideResult: function(){
+					return self.$el.find('.'+self.options.resultClass).hide()
 
-                    return self.$el.find('.'+self.options.resultClass).hide()
+				},
 
-                },
+				refreshQuestions: function(){
+					
 
-                refreshQuestions: function(){
-                    
+					/* Trigger change event */
 
-                    /* Trigger change event */
+					self.$el.trigger('smartform.guidedChange');
 
-                    self.$el.trigger('smartform.guidedChange');
+					
+				},
 
-                    
-                },
+				rules: function(action, element, rule, param){
 
-                rules: function(action, element, rule, param){
+					var name = element.data('question'),
+						index = self._keys.indexOf(name),                        
+						field = self._flatSchema[name],
+						rules = {}
 
-                    var name = element.data('question'),
-                        index = self._keys.indexOf(name),                        
-                        field = self._flatSchema[name],
-                        rules = {}
+					/* Add a rule */
 
-                    /* Add a rule */
+					rules[rule] = param;
 
-                    rules[rule] = param;
+					/* Check if you are removing a rule */
 
-                    /* Check if you are removing a rule */
+					(action == "remove") && (rules = rule)
+					
+					/* Add validation if not already added */
 
-                    (action == "remove") && (rules = rule)
-                    
-                    /* Add validation if not already added */
+					this.initValidation()
 
-                    this.initValidation()
+					/* Add validation to fields */
 
-                    /* Add validation to fields */
+					switch(field.type){
 
-                    switch(field.type){
+						/**
+						 * Adds a validation rule to date
+						 */
 
-                        /**
-                         * Adds a validation rule to date
-                         */
+						case "date":
+							self.getByName(name+'-day').rules(action, rules)
+							self.getByName(name+'-month').rules(action, rules)
+							self.getByName(name+'-year').rules(action, rules)
+							break;
 
-                        case "date":
-                            self.getByName(name+'-day').rules(action, rules)
-                            self.getByName(name+'-month').rules(action, rules)
-                            self.getByName(name+'-year').rules(action, rules)
-                            break;
+						default:
+							self.getByName(name).rules("add", rules)
+							break;
+					}
 
-                        default:
-                            self.getByName(name).rules("add", rules)
-                            break;
-                    }
+					
+				}
+			}; // End return
+		}
 
-                    
-                }
-            }; // End return
-        }
+	}
 
-    }
 
+	
+	/**
+	 * Plugin method
+	 */
+	
+	$.fn.extend({
 
-    
-    /**
-     * Plugin method
-     */
-    
-    $.fn.extend({
+		smartform: function(options){
 
-        smartform: function(options){
+			return this.each(function(){
 
-            return this.each(function(){
+				var $this = $(this),
+					smartform = $this.data('smartform')
 
-                var $this = $(this),
-                    smartform = $this.data('smartform')
+				$.data(this, 'smartform', new SmartForm(this, options))
 
-                $.data(this, 'smartform', new SmartForm(this, options))
+			})
 
-            })
+		}
+	})
 
-        }
-    })
-
-    
-    
+	
+	
 
 })

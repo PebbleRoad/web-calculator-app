@@ -1,5 +1,5 @@
 /**
- * Handlebars formulas
+ * Form template
  */
 
 define(function(require, exports, module){
