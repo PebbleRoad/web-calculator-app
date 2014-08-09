@@ -1,6 +1,6 @@
 # Web calculator app
 
-## Initialize
+## Initialize form and functions
 
 ```
 $('.calculator').smartform({        
