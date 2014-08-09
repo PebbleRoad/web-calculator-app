@@ -1,4 +1,4 @@
-# Smartform
+# Web calculator app
 
 ## Initialize
 
