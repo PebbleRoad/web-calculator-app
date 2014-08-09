@@ -39,7 +39,7 @@ $('.calculator').smartform({
 
 ```
 
-## Form Schema
+## Form schema
 
 ```
 {
@@ -99,7 +99,7 @@ $('.calculator').smartform({
 }
 ```
 
-## Handlebars Templates
+## Handlebars templates
 
 Form results use `handlebars` templates. New helpers can be added in `helpers.js`
 
