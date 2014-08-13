@@ -2,3 +2,5 @@ node_modules
 tests
 .DS_Store
 bower_components
+style.scss
+.sass-cache/

@@ -2,98 +2,28 @@
 <html>
     <head>
         <title>Smart forms</title>
-        <style>
-            label{
-                display: block;
-                padding-bottom: 10px;
-            }
-
-            .label-radio{
-                display: inline-block;
-            }
-
-            .js-hide{
-                position: absolute;
-                left: -2000px;
-                top: -2000px;
-            }
-    
-            .smartform-result{
-                //background: yellow;
-                padding: 10px;
-            }
-
-            .columns{
-                display: inline-block;
-                vertical-align: top;
-                margin-right: 1em;
-            }
-
-            table{
-                text-align: left;    
-                border-collapse: collapse            
-            }
-
-            td, th{
-                padding: 10px;
-                border: 1px #ccc solid;
-            }
-
-            /**
-             * Form
-             */
-            
-            .smartform-question{
-                background: #eee;
-                padding: 1em;
-                margin-bottom: 10px;
-            }
-
-            .smartform__options{
-                display: none;
-            }
-
-            .smartform-question-active .link--edit{
-                    display: none;                
-            }
-
-            .smartform-question-active .smartform__options{
-                display: block;
-            }
-
-            .smartform-question-active .question__answer{
-                display: none;
-            }
-            
-            .link--edit{
-                float: right;
-            }
-
-            .question__answer{
-                background: #ccc;
-                padding: 5px;
-            }
-
-        </style>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
 
-        <!-- Guided calculator -->
-        <div class="calculator" data-guided="true">
-            <h2>EMI Calculator for home loan (Guided calculator)</h2>
-        </div>
-        <!-- / Guided calculator -->
+        <div class="container">
 
-        <br><br>
+            <!-- Guided calculator -->
+            <div class="calculator" data-guided="true">
+                <h2>EMI Calculator for home loan (Guided calculator)</h2>
+            </div>
+            <!-- / Guided calculator -->
 
-        <!-- Flat calculator -->
-        <div class="calculator" data-guided="false">
-            <h2>EMI Calculator for home loan (Flat calculator)</h2>
-        </div>
-        <!-- / Flat calculator -->
+            <br><br>
+
+            <!-- Flat calculator -->
+            <div class="calculator" data-guided="false">
+                <h2>EMI Calculator for home loan (Flat calculator)</h2>
+            </div>
+            <!-- / Flat calculator -->
 
         
-
+        </div>
 
        
         
