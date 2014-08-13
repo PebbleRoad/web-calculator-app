@@ -28,6 +28,7 @@ require.config({
            init: function() {
                QUnit.config.autoload = false;
                QUnit.config.autostart = false;               
+
            },
            deps: ['jquery']
        },
