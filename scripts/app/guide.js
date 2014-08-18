@@ -2,7 +2,7 @@
  * Guided Calculator
  */
 
-define(function(require, exports, module){
+;(function(SmartForm){
 
     var Guide = function(form){
 
@@ -296,5 +296,6 @@ define(function(require, exports, module){
 
     /* Exports */
     
-    module.exports = Guide
-})
+    SmartForm.Guide = Guide
+
+})(SmartForm);

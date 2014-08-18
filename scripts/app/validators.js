@@ -1,10 +1,4 @@
-/**
- * jQuery Validators
- */
-
-define(
-    ['validate', 'moment'],
-    function(validate, moment){
+;(function($){
     
     /**
      * Get full date
@@ -20,7 +14,7 @@ define(
      * Date must be {} months than current date
      */
     
-    jQuery.validator.addMethod('dateMoreThanEqualTo', function(value, element, param){
+    $.validator.addMethod('dateMoreThanEqualTo', function(value, element, param){
 
         switch(element.nodeName.toLowerCase()){
 
@@ -38,4 +32,4 @@ define(
     }, 'Date should be more than ${0}')
 
 
-})
+})(jQuery)

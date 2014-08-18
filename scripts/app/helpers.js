@@ -1,4 +1,4 @@
-define(['hbs'], function(Handlebars){
+;(function(Handlebars){
     
     Handlebars.registerHelper('times', function(n, block) {
         var accum = '';
@@ -35,4 +35,6 @@ define(['hbs'], function(Handlebars){
         if (number === 1) { return single; }
         else { return plural; }
     });
-})
+
+
+})(Handlebars)

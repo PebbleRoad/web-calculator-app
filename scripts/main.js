@@ -1,15 +1,11 @@
 /**
- * Load configuration file
+ * On Document ready 
  */
+$(function(){
 
-require([    
-    'app/app',
-    'moment',
-    'mathjs'
-], 
-
-function(app, moment, mathjs){
-
+    /**
+     * Initliaze the calculator     
+     */
     $('.calculator').smartform({        
         schema: 'scripts/app/schema/schema.json',
         methods: {
@@ -44,4 +40,4 @@ function(app, moment, mathjs){
         }
     })
 
-});
+})

@@ -1,13 +1,23 @@
-define([
-	'jquery',    
-	'hbs',    
-	'underscore',    
-	'app/fieldtypes',        
-	'app/guide',
-	'app/validators'
-], 
+;(function($, Handlebars){
 
-function($, Handlebars, _, fieldtypes, Guide){
+	/**
+	 * Utility classes
+	 */
+	
+	var utils = {};
+
+	/**
+	 * Contains
+	 */
+	
+	utils._contains = function(obj, target){
+		if (obj == null) return false;
+	    if (Array.prototype.indexOf && obj.indexOf === Array.prototype.indexOf) return obj.indexOf(target) != -1;
+	    return any(obj, function(value) {
+	    	return value === target;
+	    });
+	}
+
 	
 	/**
 	 * Default options
@@ -137,7 +147,7 @@ function($, Handlebars, _, fieldtypes, Guide){
 
 				if(self.options.guided){
 
-					var guide = new Guide(self).init()                    
+					var guide = new SmartForm.Guide(self).init()                    
 
 				}
 				
@@ -289,7 +299,7 @@ function($, Handlebars, _, fieldtypes, Guide){
 		buildFields: function(property, field, index, obj){
 
 			
-			var smartField = fieldtypes.transform(property, field, index, this.options, obj);
+			var smartField = SmartForm.fieldtypes.transform(property, field, index, this.options, obj);
 
 
 			/* Append the form */
@@ -322,7 +332,7 @@ function($, Handlebars, _, fieldtypes, Guide){
 					/**
 					 * For events.loaded
 					 */
-					if(_.contains(event_name.split(/\s/), events.loaded)){
+					if(utils._contains(event_name.split(/\s/), events.loaded)){
 
 						this.$el.on(events.loaded, {name: e}, function(event){
 							self.fireEvent(event)
@@ -371,7 +381,7 @@ function($, Handlebars, _, fieldtypes, Guide){
 
 				for(var e  in this._events[element]){
 
-					if(_.contains(e.split(/\s/), full_event)){
+					if(utils._contains(e.split(/\s/), full_event)){
 						
 						if(this.options.methods.hasOwnProperty(this._events[element][e])){
 							return this.options.methods[this._events[element][e]].call(this, event)
@@ -679,7 +689,7 @@ function($, Handlebars, _, fieldtypes, Guide){
 					
 					/* Calculate result variables */
 					
-					_.each(self._calculations, function(value, key){
+					$.each(self._calculations, function(key, value){
 						
 						if(self.options.methods.hasOwnProperty(value)){
 							calculations[key] = self.options.methods[value].call(self, self)
@@ -841,6 +851,14 @@ function($, Handlebars, _, fieldtypes, Guide){
 	}
 
 
+	/**
+	 * 
+	 * Register to window
+	 */
+	
+	window.SmartForm = SmartForm;
+
+
 	
 	/**
 	 * Plugin method
@@ -865,4 +883,4 @@ function($, Handlebars, _, fieldtypes, Guide){
 	
 	
 
-})
+})(jQuery, Handlebars)

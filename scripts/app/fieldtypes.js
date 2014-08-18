@@ -1,18 +1,10 @@
-/**
- * Fieldtypes
- */
-
-define([
-	'jquery',
-	'hbs',
-	'app/templates',
-	'app/helpers'
-	], function($, Handlebars, hbs_templates, helpers){
-
+;(function(SmartForm){
 
 	var fieldType = {
 
 		transform: function(property, field, index, options, obj){
+
+			var hbs_templates = SmartForm.themes;
 			
 			var _inputs = $.extend({}, field, {
 				name     : property,
@@ -94,6 +86,7 @@ define([
 
 	/* Exports */
 	
-	return fieldType;
-	
-})
+	SmartForm.fieldtypes = fieldType;
+
+
+})(SmartForm);

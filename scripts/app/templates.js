@@ -1,8 +1,4 @@
-/**
- * Form template
- */
-
-define(function(require, exports, module){
+;(function(SmartForm){
 
     var themes = {
 
@@ -238,5 +234,6 @@ define(function(require, exports, module){
 
     /* Exports */
     
-    module.exports = themes
-})
+    SmartForm.themes = themes;
+
+})(SmartForm)

@@ -1,4 +1,4 @@
-define(function(){
+(function(){
 
     /**
      * For unit test logging
@@ -170,4 +170,4 @@ define(function(){
 	}
 
 
-});
+})()
