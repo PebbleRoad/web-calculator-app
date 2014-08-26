@@ -21,7 +21,7 @@
 
 					/* For radio and checkboxes */
 
-					if(field.enum){
+					if(field.hasOwnProperty('enum')){
 						
 						field.fieldtype = field.fieldtype || 'select';
 
@@ -46,9 +46,9 @@
 
 					/* Default date */
 
-					if(field.default){
+					if(field.hasOwnProperty('default')){
 
-						var d = field.default.split(/\s/);                        
+						var d = field['default'].split(/\s/);                        
 						
 						switch(d.length){
 

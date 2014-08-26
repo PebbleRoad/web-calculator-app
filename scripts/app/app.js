@@ -1,6 +1,49 @@
 ;(function($, Handlebars){
 
 	/**
+	 * Array.prototype.indexOf Shim
+	 * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
+	 */
+	if (!Array.prototype.indexOf) {
+	  Array.prototype.indexOf = function (searchElement, fromIndex) {
+
+	    var k;
+
+	    if (this == null) {
+	      throw new TypeError('"this" is null or not defined');
+	    }
+
+	    var O = Object(this);
+
+	    var len = O.length >>> 0;
+
+	    if (len === 0) {
+	      return -1;
+	    }
+
+	    var n = +fromIndex || 0;
+
+	    if (Math.abs(n) === Infinity) {
+	      n = 0;
+	    }
+
+	    if (n >= len) {
+	      return -1;
+	    }
+
+	    k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+
+	    while (k < len) {
+	      if (k in O && O[k] === searchElement) {
+	        return k;
+	      }
+	      k++;
+	    }
+	    return -1;
+	  };
+	}
+
+	/**
 	 * Utility classes
 	 */
 	
@@ -469,7 +512,7 @@
 							}
 
 							/* Input fields */
-							if(!field.enum){
+							if(!field.hasOwnProperty('enum')){
 
 								return self.getByName(name).val()
 							}
@@ -699,9 +742,10 @@
 
 					/* Add question variables */
 
-					for(k in self._keys){
-						
-						calculations[self._keys[k]] = this.get(self._keys[k], true)
+					for(var k in self._keys){
+						if(self._keys.hasOwnProperty(k)){
+							calculations[self._keys[k]] = this.get(self._keys[k], true)
+						}
 					}            
 
 					

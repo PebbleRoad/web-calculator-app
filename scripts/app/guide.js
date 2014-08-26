@@ -34,9 +34,9 @@
         /* Add Continue button */
             
         this.$continueBtn = $('<button />', {
-            class: 'btn btn--primary smartform-guided-btn',
-            text: 'Continue',
-            type: 'button'
+            'class' : 'btn btn--primary smartform-guided-btn',
+            'text'  : 'Continue',
+            'type'  : 'button'
         })
 
         /* Submit button */
@@ -74,13 +74,13 @@
 
         /* Continue */
 
-        form.$el.on('click', '.'+ this.options.continueBtnClass, $.proxy(this.continue, this));
+        form.$el.on('click', '.'+ this.options.continueBtnClass, $.proxy(this.next, this));
 
         /* Keydown enter */
 
         form.$el.on('keydown.smartform', ':input', function(e){
             if(e.which == 13 && e.target.nodeName.toLowerCase() != "textarea" && ((self.currentQuestion + 1) < self.totalQuestions)) {
-                self.continue()
+                self.next()
                 
                 e.preventDefault();
             }
@@ -168,7 +168,7 @@
 
         },
 
-        continue: function(){
+        next: function(){
 
             var self = this;
 
